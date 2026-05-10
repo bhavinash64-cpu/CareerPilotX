@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contains API keys)
+.env
+server/.env
+
+# Test files
+test_nv.js
+test_nv.py
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Secrets
+*.key
+serviceAccount.json

@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CareerPilot — AI Career Platform</title>
+<meta name="description" content="AI-powered career platform: Build stunning resumes, get career guidance, ace interviews, and land your dream job."/>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Firebase SDK (compat mode for simplicity) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+<!-- 🎥 CINEMATIC ENTRY EXPERIENCE -->
+<div id="entryOverlay" class="entry-overlay">
+  <div class="entry-content">
+    <div class="entry-logo-wrap">
+      <img src="images/logo-dark.png" alt="CareerPilot Logo" class="entry-logo-img">
+    </div>
+    <h1 class="entry-title">Next-Gen Career Intelligence</h1>
+    <p class="entry-subtitle">Elevate your professional journey with CareerPilotX. <br> AI-powered precision, premium design.</p>
+    <div class="entry-actions">
+      <button class="btn btn-primary btn-lg entry-btn" onclick="handleEntryClick()">Enter CareerPilotX ↗</button>
+    </div>
+    <div class="entry-footer-meta">v2.4.0 • AI Edition</div>
+  </div>
+</div>
+
+<!-- Ambient background -->
+<div class="ambient" aria-hidden="true">
+  <div class="ambient-grid"></div>
+  <div class="ambient-orb orb1"></div>
+  <div class="ambient-orb orb2"></div>
+  <div class="ambient-orb orb3"></div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav" id="mainNav">
+  <a class="nav-logo" onclick="showPage('landing')">
+    <img class="site-logo-img" src="images/logo-dark.png" alt="CareerPilot Logo">
+  </a>
+  <div class="nav-spacer"></div>
+  <div class="nav-links">
+    <button class="nav-link" data-nav="landing" onclick="showPage('landing')">Home</button>
+    <button class="nav-link" onclick="scrollToId('pricing')">Pricing</button>
+    <button class="nav-link" data-nav="dashboard" onclick="showPage('dashboard')">Dashboard</button>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle theme">
+      <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button type="button" class="btn btn-ghost" id="navSignInBtn" onclick="openAuth()">Sign In</button>
+    <button type="button" class="btn btn-primary" id="navCtaBtn" onclick="openAuth()">Get Started</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════
+     LANDING PAGE
+════════════════════════════════ -->
+<div id="landing" class="page active">
+  <section class="hero">
+    <div class="hero-badge">✨ Trusted by 50,000+ Professionals</div>
+    <h1 class="hero-headline">
+      Elevate Your Career<br>
+      <span class="accent">with AI Intelligence</span>
+    </h1>
+    <p class="hero-sub">
+      The all-in-one premium platform for modern professionals. Build elite resumes,
+      analyze skill gaps, and master interviews with state-of-the-art AI.
+    </p>
+    <div class="hero-btns">
+      <button type="button" class="btn btn-primary btn-lg" onclick="openAuth()">Start Free — Build Your Resume</button>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-mock">
+        <div class="mock-header">
+          <div class="mock-dot"></div>
+          <div class="mock-dot"></div>
+          <div class="mock-dot"></div>
+        </div>
+        <div class="mock-body">
+          <div class="mock-line w80"></div>
+          <div class="mock-line"></div>
+          <div class="mock-line w60"></div>
+          <div class="mock-grid">
+            <div class="mock-item"></div>
+            <div class="mock-item"></div>
+            <div class="mock-item"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES GRID (Landing) -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header-center">
+        <p class="section-label">AI-Powered Tools</p>
+        <h2 class="section-title">Your complete career toolkit</h2>
+        <p class="section-sub">All tools instantly accessible from your dashboard. No scrolling required.</p>
+      </div>
+      <div class="feat-grid" id="featGrid">
+        <!-- Feature cards injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING SECTION -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="section-header-center">
+        <p class="section-label">Pricing</p>
+        <h2 class="section-title">Choose Your Plan</h2>
+        <p class="section-sub">Start free, upgrade when you need more power</p>
+      </div>
+      <div class="pricing-grid">
+        <!-- FREE PLAN -->
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <div class="pricing-plan-name">Free</div>
+            <div class="pricing-price"><span class="pricing-currency">₹</span><span class="pricing-amount">0</span><span class="pricing-period">/forever</span></div>
+          </div>
+          <ul class="pricing-features">
+            <li class="pricing-feature"><span class="pricing-check">✓</span> Resume Builder (8 templates)</li>
+            <li class="pricing-feature"><span class="pricing-check">✓</span> ATS Scanner</li>
+            <li class="pricing-feature"><span class="pricing-check">✓</span> Cover Letter Generator</li>
+            <li class="pricing-feature"><span class="pricing-check">✓</span> Email Generator</li>
+            <li class="pricing-feature"><span class="pricing-check">✓</span> Bio Generator</li>
+            <li class="pricing-feature"><span class="pricing-check">✓</span> Resume Resources</li>
+            <li class="pricing-feature"><span class="pricing-check">✓</span> AI Improver (Basic)</li>
+            <li class="pricing-feature"><span class="pricing-check">✓</span> 3 PDF Downloads</li>
+            <li class="pricing-feature muted"><span class="pricing-x">✕</span> All 35+ Premium Templates</li>
+            <li class="pricing-feature muted"><span class="pricing-x">✕</span> AI Career Coach & Deep Enhance</li>
+            <li class="pricing-feature muted"><span class="pricing-x">✕</span> Unlimited Downloads + Image Export</li>
+          </ul>
+          <button class="btn btn-ghost btn-lg pricing-btn" onclick="openAuth()">Get Started Free</button>
+        </div>
+        <!-- PRO PLAN -->
+        <div class="pricing-card pricing-card--pro" id="proPricingCard">
+          <div class="pricing-badge">✦ MOST POPULAR</div>
+          <div class="pricing-header">
+            <div class="pricing-plan-name">Pro</div>
+            <div class="pricing-price"><span class="pricing-currency">₹</span><span class="pricing-amount">99</span><span class="pricing-period">/month</span></div>
+          </div>
+          <ul class="pricing-features">
+            <li class="pricing-feature"><span class="pricing-check">✓</span> Everything in Free</li>
+            <li class="pricing-feature"><span class="pricing-check pro">✓</span> <strong>All 35+ Premium Templates</strong></li>
+            <li class="pricing-feature"><span class="pricing-check pro">✓</span> <strong>AI Career Coach</strong></li>
+            <li class="pricing-feature"><span class="pricing-check pro">✓</span> <strong>Deep AI Enhance (PRO)</strong></li>
+            <li class="pricing-feature"><span class="pricing-check pro">✓</span> Unlimited PDF Downloads</li>
+            <li class="pricing-feature"><span class="pricing-check pro">✓</span> Image Export (PNG)</li>
+            <li class="pricing-feature"><span class="pricing-check pro">✓</span> Career GPS Mapping</li>
+            <li class="pricing-feature"><span class="pricing-check pro">✓</span> Priority AI Processing</li>
+          </ul>
+          <button class="btn btn-primary btn-lg pricing-btn" id="proPricingBtn" onclick="openUpgrade()">Upgrade to Pro →</button>
+          <p class="pricing-note">No Refund · Secured with Stripe</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS SECTION -->
+  <section class="section section-alt" id="reviews">
+    <div class="container">
+      <div class="section-header-center">
+        <p class="section-label">Wall of Love</p>
+        <h2 class="section-title">Trusted by Professionals</h2>
+        <p class="section-sub">See how CareerPilot is changing careers around the world.</p>
+      </div>
+      <div class="reviews-marquee-wrap">
+        <div class="reviews-marquee">
+          <div class="reviews-marquee-inner">
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The AI resume builder transformed my old CV into a masterpiece. I started getting interview calls within a week! Highly recommended."</p>
+          <div class="review-author">
+            <div class="review-avatar">k</div>
+            <div class="review-name">karnati sai krishna</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Incredible platform. The ATS scanner showed me exactly what I was missing. It's like having a personal career coach 24/7."</p>
+          <div class="review-author">
+            <div class="review-avatar">p</div>
+            <div class="review-name">palmoor mahith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"I used the cover letter generator for my dream job application and got a call back the next day. The AI understands the context perfectly."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">shishir</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"CareerPilot is a game-changer. The UI is sleek and the tools are incredibly fast. The premium templates are absolutely beautiful."</p>
+          <div class="review-author">
+            <div class="review-avatar">a</div>
+            <div class="review-name">abhiram</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I was struggling with my job hunt until I found this. The skill gap analysis helped me focus my learning. 10/10 platform!"</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">sai sathwik</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The AI coach gives better advice than my university career center. It feels tailored to my specific industry and goals."</p>
+          <div class="review-author">
+            <div class="review-avatar">r</div>
+            <div class="review-name">rithwik</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"Absolutely worth the Pro upgrade! The deep enhance feature completely rewrote my bullet points into powerful achievement statements."</p>
+          <div class="review-author">
+            <div class="review-avatar">r</div>
+            <div class="review-name">rishikesh</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Best resume builder out there. Period. No hidden fees, no clunky interfaces. Just smooth, AI-powered excellence."</p>
+          <div class="review-author">
+            <div class="review-avatar">p</div>
+            <div class="review-name">preetham nakkala</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The project builder gave me amazing ideas to boost my portfolio. I added two projects and it completely changed my profile."</p>
+          <div class="review-author">
+            <div class="review-avatar">m</div>
+            <div class="review-name">manvith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I love how I can export to both PDF and Image seamlessly. The customization options are endless."</p>
+          <div class="review-author">
+            <div class="review-avatar">n</div>
+            <div class="review-name">nishanth</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Using CareerPilot was the best investment in my career. The interview prep resources are top-notch and highly relevant."</p>
+          <div class="review-author">
+            <div class="review-avatar">r</div>
+            <div class="review-name">rishwik</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"The social bio generator is such a neat feature! Updated my LinkedIn and instantly saw more recruiter traffic."</p>
+          <div class="review-author">
+            <div class="review-avatar">d</div>
+            <div class="review-name">deekshith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Flawless experience. It automatically formatted my experience perfectly without me having to fight with margins or spacing."</p>
+          <div class="review-author">
+            <div class="review-avatar">v</div>
+            <div class="review-name">venkat charan teja</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I've tried a dozen resume builders, and this is by far the most intuitive. The AI suggestions are incredibly accurate."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">sushil</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"From a blank page to a professional resume in 10 minutes. The AI generated realistic summaries that sounded just like me."</p>
+          <div class="review-author">
+            <div class="review-avatar">y</div>
+            <div class="review-name">yashwanth</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The career GPS is mind-blowing. It charted out a 3-year plan for me to reach my target role as a Senior Dev."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">shreyan</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Saves me hours of overthinking. I just paste my rough notes, and the AI polishes them into corporate-ready text."</p>
+          <div class="review-author">
+            <div class="review-avatar">v</div>
+            <div class="review-name">vrushank reddy</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"Great tool for students and grads. It helped me highlight my academic projects in a way that appeals to recruiters."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">sri charan</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The dark mode UI is gorgeous, and the real-time preview makes editing a breeze. I actually enjoyed updating my resume."</p>
+          <div class="review-author">
+            <div class="review-avatar">h</div>
+            <div class="review-name">harsha vardan chari</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The email generator is a lifesaver. No more staring at a blank screen wondering how to follow up after an interview."</p>
+          <div class="review-author">
+            <div class="review-avatar">r</div>
+            <div class="review-name">ram charan</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I got my current job thanks to a resume built on CareerPilot. The ATS scanner is incredibly precise."</p>
+          <div class="review-author">
+            <div class="review-avatar">m</div>
+            <div class="review-name">manikanth anumula</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Phenomenal tool! The 35+ premium templates cater to every industry. I found the perfect modern layout for my design portfolio."</p>
+          <div class="review-author">
+            <div class="review-avatar">p</div>
+            <div class="review-name">parikshith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I highly recommend the AI Coach. It analyzed my skills and gave me honest, actionable feedback on what to improve."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">subash</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"A must-have for anyone actively looking for jobs. The interface is clean, fast, and packed with powerful AI tools."</p>
+          <div class="review-author">
+            <div class="review-avatar">b</div>
+            <div class="review-name">bokka</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"It identified 5 missing keywords in my resume that were critical for the job I wanted. I applied with the updated version and got the interview!"</p>
+          <div class="review-author">
+            <div class="review-avatar">b</div>
+            <div class="review-name">bokka mokshith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Super easy to use. The drag-and-drop section reordering is smooth, and the live preview updates instantly."</p>
+          <div class="review-author">
+            <div class="review-avatar">d</div>
+            <div class="review-name">drona</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The AI tools are not just gimmicks; they actually understand industry jargon and context. Very impressed!"</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">srujan</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I helped my entire team update their resumes using this platform during a transition period. Everyone loved it. Five stars."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">suhas</div>
+          </div>
+        </div>
+      </div>
+          <div class="reviews-marquee-inner" aria-hidden="true">
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The AI resume builder transformed my old CV into a masterpiece. I started getting interview calls within a week! Highly recommended."</p>
+          <div class="review-author">
+            <div class="review-avatar">k</div>
+            <div class="review-name">karnati sai krishna</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Incredible platform. The ATS scanner showed me exactly what I was missing. It's like having a personal career coach 24/7."</p>
+          <div class="review-author">
+            <div class="review-avatar">p</div>
+            <div class="review-name">palmoor mahith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"I used the cover letter generator for my dream job application and got a call back the next day. The AI understands the context perfectly."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">shishir</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"CareerPilot is a game-changer. The UI is sleek and the tools are incredibly fast. The premium templates are absolutely beautiful."</p>
+          <div class="review-author">
+            <div class="review-avatar">a</div>
+            <div class="review-name">abhiram</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I was struggling with my job hunt until I found this. The skill gap analysis helped me focus my learning. 10/10 platform!"</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">sai sathwik</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The AI coach gives better advice than my university career center. It feels tailored to my specific industry and goals."</p>
+          <div class="review-author">
+            <div class="review-avatar">r</div>
+            <div class="review-name">rithwik</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"Absolutely worth the Pro upgrade! The deep enhance feature completely rewrote my bullet points into powerful achievement statements."</p>
+          <div class="review-author">
+            <div class="review-avatar">r</div>
+            <div class="review-name">rishikesh</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Best resume builder out there. Period. No hidden fees, no clunky interfaces. Just smooth, AI-powered excellence."</p>
+          <div class="review-author">
+            <div class="review-avatar">p</div>
+            <div class="review-name">preetham nakkala</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The project builder gave me amazing ideas to boost my portfolio. I added two projects and it completely changed my profile."</p>
+          <div class="review-author">
+            <div class="review-avatar">m</div>
+            <div class="review-name">manvith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I love how I can export to both PDF and Image seamlessly. The customization options are endless."</p>
+          <div class="review-author">
+            <div class="review-avatar">n</div>
+            <div class="review-name">nishanth</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Using CareerPilot was the best investment in my career. The interview prep resources are top-notch and highly relevant."</p>
+          <div class="review-author">
+            <div class="review-avatar">r</div>
+            <div class="review-name">rishwik</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"The social bio generator is such a neat feature! Updated my LinkedIn and instantly saw more recruiter traffic."</p>
+          <div class="review-author">
+            <div class="review-avatar">d</div>
+            <div class="review-name">deekshith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Flawless experience. It automatically formatted my experience perfectly without me having to fight with margins or spacing."</p>
+          <div class="review-author">
+            <div class="review-avatar">v</div>
+            <div class="review-name">venkat charan teja</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I've tried a dozen resume builders, and this is by far the most intuitive. The AI suggestions are incredibly accurate."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">sushil</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"From a blank page to a professional resume in 10 minutes. The AI generated realistic summaries that sounded just like me."</p>
+          <div class="review-author">
+            <div class="review-avatar">y</div>
+            <div class="review-name">yashwanth</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The career GPS is mind-blowing. It charted out a 3-year plan for me to reach my target role as a Senior Dev."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">shreyan</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Saves me hours of overthinking. I just paste my rough notes, and the AI polishes them into corporate-ready text."</p>
+          <div class="review-author">
+            <div class="review-avatar">v</div>
+            <div class="review-name">vrushank reddy</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"Great tool for students and grads. It helped me highlight my academic projects in a way that appeals to recruiters."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">sri charan</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The dark mode UI is gorgeous, and the real-time preview makes editing a breeze. I actually enjoyed updating my resume."</p>
+          <div class="review-author">
+            <div class="review-avatar">h</div>
+            <div class="review-name">harsha vardan chari</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The email generator is a lifesaver. No more staring at a blank screen wondering how to follow up after an interview."</p>
+          <div class="review-author">
+            <div class="review-avatar">r</div>
+            <div class="review-name">ram charan</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I got my current job thanks to a resume built on CareerPilot. The ATS scanner is incredibly precise."</p>
+          <div class="review-author">
+            <div class="review-avatar">m</div>
+            <div class="review-name">manikanth anumula</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Phenomenal tool! The 35+ premium templates cater to every industry. I found the perfect modern layout for my design portfolio."</p>
+          <div class="review-author">
+            <div class="review-avatar">p</div>
+            <div class="review-name">parikshith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I highly recommend the AI Coach. It analyzed my skills and gave me honest, actionable feedback on what to improve."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">subash</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"A must-have for anyone actively looking for jobs. The interface is clean, fast, and packed with powerful AI tools."</p>
+          <div class="review-author">
+            <div class="review-avatar">b</div>
+            <div class="review-name">bokka</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★☆</div>
+          <p class="review-text">"It identified 5 missing keywords in my resume that were critical for the job I wanted. I applied with the updated version and got the interview!"</p>
+          <div class="review-author">
+            <div class="review-avatar">b</div>
+            <div class="review-name">bokka mokshith</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Super easy to use. The drag-and-drop section reordering is smooth, and the live preview updates instantly."</p>
+          <div class="review-author">
+            <div class="review-avatar">d</div>
+            <div class="review-name">drona</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"The AI tools are not just gimmicks; they actually understand industry jargon and context. Very impressed!"</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">srujan</div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"I helped my entire team update their resumes using this platform during a transition period. Everyone loved it. Five stars."</p>
+          <div class="review-author">
+            <div class="review-avatar">s</div>
+            <div class="review-name">suhas</div>
+          </div>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="nav-logo" onclick="showPage('landing')">
+            <img class="site-logo-img" alt="CareerPilot Logo">
+          </a>
+          <p class="footer-desc">Empowering professionals with AI-driven career tools for the modern era.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Product</h4>
+            <a onclick="scrollToId('features')">Features</a>
+            <a onclick="scrollToId('pricing')">Pricing</a>
+            <a onclick="openAuth()">Get Started</a>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <a onclick="scrollToId('contact')">Help Center</a>
+            <a onclick="scrollToId('contact')">Contact Us</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 CareerPilot AI. All rights reserved.</span>
+        <div class="footer-legal">
+          <a>Privacy Policy</a>
+          <a>Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════
+     DASHBOARD
+════════════════════════════════ -->
+<div id="dashboard" class="page">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-content">
+      <p class="sidebar-section-label">⚡ Primary</p>
+      <button class="sidebar-item sidebar-item--primary active" data-section="resume" onclick="switchSection('resume',this)">
+        <span class="sidebar-icon">📄</span> <span class="sidebar-label-text">Resume Builder</span>
+        <span class="sidebar-badge badge-hot">🔥 HOT</span>
+      </button>
+      <button class="sidebar-item sidebar-item--primary" data-section="interview" onclick="switchSection('interview',this)">
+        <span class="sidebar-icon">📚</span> <span class="sidebar-label-text">Resume Resources</span>
+        <span class="sidebar-badge badge-new">NEW</span>
+      </button>
+      <button class="sidebar-item sidebar-item--primary" data-section="bio" onclick="switchSection('bio',this)">
+        <span class="sidebar-icon">📱</span> <span class="sidebar-label-text">Bio Tools</span>
+        <span class="sidebar-badge badge-new">NEW</span>
+      </button>
+
+      <p class="sidebar-section-label">Analyze</p>
+      <button class="sidebar-item" data-section="skillgap" onclick="switchSection('skillgap',this)">
+        <span class="sidebar-icon">🎯</span> <span class="sidebar-label-text">Skill Gap</span>
+      </button>
+      <button class="sidebar-item" data-section="cover" onclick="switchSection('cover',this)">
+        <span class="sidebar-icon">✉️</span> <span class="sidebar-label-text">Cover Letter</span>
+      </button>
+      <button class="sidebar-item" data-section="email" onclick="switchSection('email',this)">
+        <span class="sidebar-icon">📧</span> <span class="sidebar-label-text">Email Generator</span>
+      </button>
+
+      <p class="sidebar-section-label">Advanced</p>
+      <button class="sidebar-item" data-section="gps" onclick="switchSection('gps',this)">
+        <span class="sidebar-icon">🧠</span> <span class="sidebar-label-text">Career GPS</span>
+        <span class="sidebar-badge badge-hot">🔥 HOT</span>
+      </button>
+      <button class="sidebar-item" data-section="chat" onclick="switchSection('chat',this)">
+        <span class="sidebar-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--g1);"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        </span> 
+        <span class="sidebar-label-text">AI Coach</span>
+        <span class="sidebar-badge badge-hot">🔥 HOT</span>
+      </button>
+    </div>
+
+    <!-- Highlighted Profile -->
+    <div class="sidebar-profile" onclick="switchSection('profile',null)">
+      <div class="profile-avatar" id="sidebarAvatar">G</div>
+      <div class="profile-info">
+        <div class="profile-name" id="sidebarUserName">Guest User</div>
+        <div class="profile-plan" id="sidebarUserPlan">Free Plan</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+    <!-- Contextual Toolbar (replaces duplicate quick-access nav) -->
+    <div class="dash-toolbar">
+      <div class="dash-toolbar-inner">
+        <div class="dash-breadcrumb">
+          <span class="breadcrumb-root">Dashboard</span>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current" id="toolbarSectionTitle">Resume Builder</span>
+        </div>
+        <div class="dash-toolbar-spacer"></div>
+        <div class="dash-toolbar-actions">
+          <button class="btn btn-ghost btn-sm" id="dashUpgradeBtn" onclick="openUpgrade()">✨ Upgrade</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guest Warning -->
+    <div id="guestSessionBanner" class="guest-session-banner" hidden>
+      <div class="guest-session-banner-inner">
+        <span class="guest-session-icon">⏱️</span>
+        <div class="guest-session-copy">
+          <strong>Guest Mode Active</strong>
+          <p>Session expires in <span id="guestSessionTTL">24h 0m</span>. Sign in to save permanently.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="loginUserGoogle()">Sign In</button>
+      </div>
+    </div>
+
+    <!-- ═══ SECTIONS ═══ -->
+
+    <!-- ═══ RESUME BUILDER ═══ -->
+    <div class="dash-section" id="sec-resume">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div>
+            <div class="tool-title">📄 Advanced Resume Builder</div>
+            <div class="tool-subtitle">35+ professional templates · Live preview · PDF & Image export · Drag & drop · Photo support · AI-powered</div>
+          </div>
+        </div>
+
+        <!-- Template picker -->
+        <!-- Template picker -->
+        <!-- Template picker Redesign -->
+        <div class="template-selector-container">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;">
+            <h4 style="font-size:.82rem;font-weight:700;color:var(--text2);margin:0;text-transform:uppercase;letter-spacing:.2px;">Select Template</h4>
+            <button class="btn btn-xs btn-ghost" onclick="fillFakeResumeData()">✨ Fill Demo Data</button>
+          </div>
+          <div class="template-categories" id="templateCats">
+            <button class="cat-btn active" onclick="filterTemplates('all', this)">All</button>
+            <button class="cat-btn" onclick="filterTemplates('modern', this)">Modern</button>
+            <button class="cat-btn" onclick="filterTemplates('ats', this)">ATS</button>
+            <button class="cat-btn" onclick="filterTemplates('creative', this)">Creative</button>
+            <button class="cat-btn" onclick="filterTemplates('minimal', this)">Minimal</button>
+            <button class="cat-btn" onclick="filterTemplates('premium', this)">Premium</button>
+          </div>
+          
+          <div class="carousel-viewport">
+            <button class="carousel-nav prev" onclick="scrollCarousel(-1)">❮</button>
+            <div class="tpl-carousel" id="tplPicker"></div>
+            <button class="carousel-nav next" onclick="scrollCarousel(1)">❯</button>
+          </div>
+        </div>
+
+        <!-- Customization bar -->
+        <div class="customize-bar">
+          <div class="customize-group">
+            <span class="customize-label">Color</span>
+            <div class="color-swatch-wrap">
+              <div class="color-swatch active" style="background:#22c55e;" data-color="#22c55e" onclick="setResumeColor(this)"></div>
+              <div class="color-swatch" style="background:#3b82f6;" data-color="#3b82f6" onclick="setResumeColor(this)"></div>
+              <div class="color-swatch" style="background:#8b5cf6;" data-color="#8b5cf6" onclick="setResumeColor(this)"></div>
+              <div class="color-swatch" style="background:#ef4444;" data-color="#ef4444" onclick="setResumeColor(this)"></div>
+              <div class="color-swatch" style="background:#f59e0b;" data-color="#f59e0b" onclick="setResumeColor(this)"></div>
+              <div class="color-swatch" style="background:#1a365d;" data-color="#1a365d" onclick="setResumeColor(this)"></div>
+              <div class="color-swatch custom-picker">
+                <input type="color" class="color-input" value="#22c55e" oninput="setCustomColor(this.value)" title="Pick custom color"/>
+              </div>
+            </div>
+          </div>
+          <div class="customize-group">
+            <span class="customize-label">Font</span>
+            <select class="font-select" id="fontSelect" onchange="setResumeFont(this.value)">
+              <option value="'Georgia',serif">Georgia</option>
+              <option value="'Helvetica',sans-serif">Helvetica</option>
+              <option value="'Times New Roman',serif">Times New Roman</option>
+              <option value="'Courier New',monospace">Courier New</option>
+              <option value="'Outfit',sans-serif">Outfit</option>
+              <option value="'Garamond',serif">Garamond</option>
+            </select>
+          </div>
+          <div class="customize-group">
+            <span class="customize-label">Spacing</span>
+            <input type="range" class="spacing-slider" min="1" max="3" step="0.5" value="1.5" oninput="setResumeSpacing(this.value)"/>
+          </div>
+        </div>
+
+        <!-- Form tabs -->
+        <div class="section-tabs">
+          <button class="section-tab active" onclick="switchFormTab('personal',this)">Personal</button>
+          <button class="section-tab" onclick="switchFormTab('experience',this)">Experience</button>
+          <button class="section-tab" onclick="switchFormTab('education',this)">Education</button>
+          <button class="section-tab" onclick="switchFormTab('skills',this)">Skills</button>
+          <button class="section-tab" onclick="switchFormTab('projects',this)">Projects</button>
+          <button class="section-tab" onclick="switchFormTab('extra',this)">Extras</button>
+          <button class="section-tab" onclick="switchFormTab('order',this)">⇅ Reorder</button>
+        </div>
+
+        <div class="builder-wrap">
+          <div class="builder-form">
+            <!-- PERSONAL -->
+            <div class="form-section active" id="fs-personal">
+              <!-- Photo Upload -->
+              <div class="photo-upload-wrap">
+                <div class="photo-preview" id="photoPreview" onclick="document.getElementById('photoInput').click()">
+                  <span class="photo-preview-placeholder" id="photoPlaceholder">📷</span>
+                  <img id="photoImg" style="display:none;"/>
+                </div>
+                <div class="photo-controls">
+                  <label class="form-label">Resume Photo (optional)</label>
+                  <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)"/>
+                  <div class="photo-toggle">
+                    <button class="drag-toggle" id="photoToggle" onclick="togglePhoto(this)"></button>
+                    <span>Show photo on resume</span>
+                  </div>
+                  <div style="margin-top:10px; display:flex; gap:10px; align-items:center;">
+                    <span class="form-label" style="margin-bottom:0;">Size</span>
+                    <input type="range" min="40" max="100" value="52" oninput="setPhotoSize(this.value)" style="flex:1;"/>
+                    <span class="form-label" style="margin-bottom:0;">Shape</span>
+                    <select class="form-select" style="padding:2px 8px; font-size:11px;" onchange="setPhotoShape(this.value)">
+                      <option value="circle">Circle</option>
+                      <option value="rounded">Rounded</option>
+                      <option value="square">Square</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="rv-name" placeholder="e.g. Priya Sharma" oninput="liveUpdate()"/></div>
+                <div class="form-group"><label class="form-label">Target Role *</label><input class="form-input" id="rv-role" placeholder="e.g. Software Engineer" oninput="liveUpdate()"/></div>
+                <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="rv-email" placeholder="priya@email.com" oninput="liveUpdate()"/></div>
+                <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="rv-phone" placeholder="+91 98765 43210" oninput="liveUpdate()"/></div>
+                <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="rv-location" placeholder="Hyderabad, India" oninput="liveUpdate()"/></div>
+                <div class="form-group"><label class="form-label">LinkedIn / Portfolio</label><input class="form-input" id="rv-linkedin" placeholder="linkedin.com/in/priya" oninput="liveUpdate()"/></div>
+                <div class="form-group full"><label class="form-label">Professional Summary</label><textarea class="form-textarea" id="rv-summary" placeholder="2–3 sentence career snapshot..." oninput="liveUpdate()"></textarea>
+                </div>
+              </div>
+            </div>
+            <!-- EXPERIENCE -->
+            <div class="form-section" id="fs-experience">
+              <div class="form-group full"><label class="form-label">Work Experience / Internships</label><textarea class="form-textarea" id="rv-experience" style="min-height:160px" placeholder="Software Intern · TCS · Jun–Aug 2023&#10;• Built REST APIs serving 5K+ users&#10;• Reduced response time by 40%&#10;&#10;Add each role separated by a blank line..." oninput="liveUpdate()"></textarea>
+              </div>
+            </div>
+            <!-- EDUCATION -->
+            <div class="form-section" id="fs-education">
+              <div class="form-grid">
+                <div class="form-group"><label class="form-label">Degree</label><input class="form-input" id="rv-degree" placeholder="B.Tech Computer Science" oninput="liveUpdate()"/></div>
+                <div class="form-group"><label class="form-label">Institution</label><input class="form-input" id="rv-institution" placeholder="VIT University" oninput="liveUpdate()"/></div>
+                <div class="form-group"><label class="form-label">Year</label><input class="form-input" id="rv-year" placeholder="2024" oninput="liveUpdate()"/></div>
+                <div class="form-group"><label class="form-label">CGPA / %</label><input class="form-input" id="rv-gpa" placeholder="8.5 / 10" oninput="liveUpdate()"/></div>
+                <div class="form-group full"><label class="form-label">Additional Education</label><textarea class="form-textarea" id="rv-edu2" placeholder="Class XII · Delhi Public School · 2020 · 92%" oninput="liveUpdate()"></textarea></div>
+              </div>
+            </div>
+            <!-- SKILLS -->
+            <div class="form-section" id="fs-skills">
+              <div class="form-group"><label class="form-label">Technical Skills (comma-separated)</label><input class="form-input" id="rv-skills" placeholder="Python, React, Node.js, SQL, AWS, Docker" oninput="liveUpdate()"/></div>
+              <div class="form-group" style="margin-top:.75rem"><label class="form-label">Soft Skills</label><input class="form-input" id="rv-softskills" placeholder="Leadership, Problem Solving, Communication" oninput="liveUpdate()"/></div>
+              <div class="form-group" style="margin-top:.75rem"><label class="form-label">Languages</label><input class="form-input" id="rv-languages" placeholder="English (Fluent), Hindi (Native)" oninput="liveUpdate()"/></div>
+            </div>
+            <!-- PROJECTS -->
+            <div class="form-section" id="fs-projects">
+              <div class="form-group full"><label class="form-label">Projects</label><textarea class="form-textarea" id="rv-projects" style="min-height:160px" placeholder="E-Commerce Platform · React + Firebase&#10;• Built full-stack app with 200+ users&#10;&#10;Add projects separated by blank lines..." oninput="liveUpdate()"></textarea>
+              </div>
+            </div>
+            <!-- EXTRAS -->
+            <div class="form-section" id="fs-extra">
+              <div class="form-group"><label class="form-label">Certifications</label><textarea class="form-textarea" id="rv-certs" placeholder="AWS Cloud Practitioner · 2024&#10;Google Data Analytics · 2023" oninput="liveUpdate()"></textarea></div>
+              <div class="form-group" style="margin-top:.75rem"><label class="form-label">Achievements</label><textarea class="form-textarea" id="rv-achievements" placeholder="Winner, Smart India Hackathon 2023&#10;Dean's List — 4 semesters" oninput="liveUpdate()"></textarea></div>
+            </div>
+            <!-- SECTION REORDER -->
+            <div class="form-section" id="fs-order">
+              <p style="font-size:.82rem;color:var(--text2);margin-bottom:1rem;">Drag sections to reorder them on your resume. Toggle visibility.</p>
+              <div id="sectionOrderList"></div>
+            </div>
+
+            <button class="gen-btn" onclick="generateResume()">⚡ Generate & Preview Resume</button>
+          </div>
+
+          <!-- LIVE PREVIEW -->
+          <div class="builder-preview-wrap">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+              <div style="font-size:.78rem;font-weight:700;color:var(--muted);letter-spacing:.3px;text-transform:uppercase;">Live Preview</div>
+              <div id="resumeScoreSmall" style="font-size:.75rem;font-weight:800;color:var(--g3);"></div>
+            </div>
+            <div class="preview-box" id="resumePreviewBox">
+              <div id="resumePreviewContent" style="padding:28px 32px;min-height:600px;background:#fff;color:#555;font-family:Georgia,serif;font-size:10px;display:flex;align-items:center;justify-content:center;text-align:center;">
+                <div>
+                  <div style="font-size:2em;margin-bottom:.5rem;">📄</div>
+                  <div style="font-size:1.2em;font-weight:700;color:#333;">Fill in your details</div>
+                  <div style="font-size:.9em;color:#888;margin-top:.3em;">Preview updates as you type</div>
+                </div>
+              </div>
+            </div>
+            <div id="paginationControls" style="display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;display:none;">
+              <button class="btn btn-xs btn-ghost" id="btnPrevPage" onclick="prevResumePage()">◀ Back</button>
+              <div id="pageIndicator" style="font-size:0.75rem;font-weight:700;color:var(--muted);">Page 1 of 1</div>
+              <button class="btn btn-xs btn-ghost" id="btnNextPage" onclick="nextResumePage()">Next ▶</button>
+            </div>
+
+            <!-- Resume Score -->
+            <div class="tool-screen-wrap" style="padding:1rem;margin-top:1rem;" id="scoreSection" hidden>
+              <div style="display:flex;align-items:center;gap:1rem;">
+                <div class="score-ring-wrap">
+                  <svg class="score-ring-svg" viewBox="0 0 100 100">
+                    <circle class="score-ring-bg" cx="50" cy="50" r="42"/>
+                    <circle class="score-ring-fg" cx="50" cy="50" r="42" id="scoreRingFg" stroke-dasharray="264" stroke-dashoffset="264"/>
+                    <text class="score-num" x="50" y="48" text-anchor="middle" id="scoreNumText">0</text>
+                    <text class="score-label-text" x="50" y="62" text-anchor="middle">SCORE</text>
+                  </svg>
+                </div>
+                <div class="score-tips" id="scoreTips"></div>
+              </div>
+            </div>
+
+            <div class="preview-actions">
+              <button class="btn btn-primary btn-sm" onclick="downloadResumePDF()" id="dlPDF" disabled style="opacity:.4">📥 PDF</button>
+              <button class="btn btn-ghost btn-sm" onclick="downloadResumeImage()" id="dlImg" disabled style="opacity:.4">🖼️ Image</button>
+              <button class="btn btn-ghost btn-sm" onclick="generateResume()">🔄 Regenerate</button>
+              <button class="btn btn-pro btn-sm" onclick="runAITool('roast')" style="background:linear-gradient(135deg,#f97316,#ef4444);color:white;border:none;">🔥 Roast Me</button>
+            </div>
+            <div id="roast-result" style="margin-top:1rem;"></div>
+
+            <!-- Version Control -->
+            <div style="margin-top:.75rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;">Versions</span>
+                <button class="btn btn-xs btn-ghost" onclick="saveResumeVersion()">💾 Save Version</button>
+              </div>
+              <div class="version-bar" id="versionBar">
+                <span style="font-size:.72rem;color:var(--muted);">No saved versions yet</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ COVER LETTER ═══ -->
+    <div class="dash-section" id="sec-cover">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div><div class="tool-title">✉️ Cover Letter Generator</div><div class="tool-subtitle">Compelling, personalized cover letters tailored to your role</div></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="cl-name" placeholder="Priya Sharma"/></div>
+          <div class="form-group"><label class="form-label">Target Role</label><input class="form-input" id="cl-role" placeholder="Software Engineer"/></div>
+          <div class="form-group"><label class="form-label">Company</label><input class="form-input" id="cl-company" placeholder="Google"/></div>
+          <div class="form-group"><label class="form-label">Key Skills</label><input class="form-input" id="cl-skills" placeholder="React, Python, AWS"/></div>
+          <div class="form-group full"><label class="form-label">Experience Highlights</label><textarea class="form-textarea" id="cl-exp" placeholder="Brief background..."></textarea></div>
+          <div class="form-group"><label class="form-label">Tone</label>
+            <select class="form-select" id="cl-tone"><option>Professional</option><option>Enthusiastic</option><option>Confident</option><option>Creative</option></select>
+          </div>
+        </div>
+        <button class="gen-btn" onclick="runAITool('cover')">✉️ Generate Cover Letter</button>
+        <div id="cover-result"></div>
+      </div>
+    </div>
+
+    <!-- ═══ EMAIL GENERATOR ═══ -->
+    <div class="dash-section" id="sec-email">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div><div class="tool-title">📧 Email Generator</div><div class="tool-subtitle">Professional job application & follow-up emails</div></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="em-name" placeholder="Priya Sharma"/></div>
+          <div class="form-group"><label class="form-label">Role</label><input class="form-input" id="em-role" placeholder="Frontend Developer"/></div>
+          <div class="form-group"><label class="form-label">Company</label><input class="form-input" id="em-company" placeholder="Microsoft"/></div>
+          <div class="form-group"><label class="form-label">Email Type</label>
+            <select class="form-select" id="em-type"><option>Job Application</option><option>Follow-Up</option><option>Referral Request</option><option>Thank You</option></select>
+          </div>
+        </div>
+        <button class="gen-btn" onclick="runAITool('email')">📧 Generate Email</button>
+        <div id="email-result"></div>
+      </div>
+    </div>
+    <!-- ═══ BIO TOOLS ═══ -->
+    <div class="dash-section" id="sec-bio">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div><div class="tool-title">📱 Social Bio Generator</div><div class="tool-subtitle">Professional Instagram & Facebook bios tailored for your career</div></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="bio-name" placeholder="Priya Sharma"/></div>
+          <div class="form-group"><label class="form-label">Profession</label><input class="form-input" id="bio-profession" placeholder="Software Engineer"/></div>
+          <div class="form-group"><label class="form-label">Key Achievement</label><input class="form-input" id="bio-achievement" placeholder="Built 50+ projects"/></div>
+          <div class="form-group"><label class="form-label">Platform</label>
+            <select class="form-select" id="bio-platform">
+              <option value="instagram">Instagram</option>
+              <option value="facebook">Facebook</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:.5rem;">
+          <button class="gen-btn" style="flex:1;" onclick="runAITool('bio')">📱 Generate Bio</button>
+          <button class="gen-btn" style="flex:1;background:linear-gradient(135deg,#8b5cf6,#6366f1);" onclick="aiGenerateBio()">🔮 AI Generate</button>
+        </div>
+        <div id="bio-result"></div>
+        <!-- Bio Suggestions (Threads-style) -->
+        <div style="margin-top:1.25rem;">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:.75rem;">💡 Quick Bio Suggestions</div>
+          <div id="bioSuggestions"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ═══ SKILL GAP ═══ -->
+    <div class="dash-section" id="sec-skillgap">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div><div class="tool-title">🎯 Skill Gap Analysis</div><div class="tool-subtitle">Compare your skills vs job requirements</div></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Your Skills</label><input class="form-input" id="sg-skills" placeholder="Python, React, SQL..."/></div>
+          <div class="form-group"><label class="form-label">Target Role</label><input class="form-input" id="sg-role" placeholder="Data Scientist"/></div>
+        </div>
+        <button class="gen-btn" onclick="runAITool('skillgap')">🎯 Analyze Gap</button>
+        <div id="skillgap-result"></div>
+      </div>
+    </div>
+
+    <!-- ═══ AI COACH CHAT ═══ -->
+    <div class="dash-section" id="sec-chat">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div style="display:flex;align-items:center;gap:15px;">
+            <div class="sidebar-icon" style="width:36px;height:36px;flex-shrink:0;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--g1);"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+            </div>
+            <div><div class="tool-title">AI Career Coach</div><div class="tool-subtitle">Resume tips, career guidance, interview Q&A, skill analysis</div></div>
+          </div>
+        </div>
+        <div class="chat-wrap">
+          <div class="chat-messages" id="chatMessages">
+            <div>
+              <div class="chat-ai-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--g1);vertical-align:middle;margin-right:4px;"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                CAREERPILOT AI
+              </div>
+              <div class="chat-bubble ai">Hey! I'm your AI Career Coach. Ask me anything — how to get into top companies, skills to learn, negotiate salary, or resume tips. I'm here to help! 🚀</div>
+            </div>
+          </div>
+          <div class="chat-input-wrap">
+            <input class="chat-input" id="chatInput" placeholder="Ask your career question..." onkeydown="if(event.key==='Enter')sendChat()"/>
+            <button class="chat-send" onclick="sendChat()">Send ↗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ RESUME RESOURCES ═══ -->
+    <div class="dash-section" id="sec-interview">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div><div class="tool-title">📚 AI Resume Resources</div><div class="tool-subtitle">Get the best websites, tools, and locations for resume building</div></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Role</label><input class="form-input" id="iv-role" placeholder="e.g. Frontend Developer"/></div>
+          <div class="form-group"><label class="form-label">Level</label>
+            <select class="form-select" id="iv-type"><option>Entry Level</option><option>Mid Level</option><option>Senior</option><option>Executive</option></select>
+          </div>
+        </div>
+        <button class="gen-btn" onclick="runAITool('interview')">📚 Get Resources</button>
+        <div id="interview-result"></div>
+      </div>
+    </div>
+
+    <!-- ═══ CAREER GPS ═══ -->
+    <div class="dash-section" id="sec-gps">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div><div class="tool-title">🧠 Career GPS Map</div><div class="tool-subtitle">Chart your path from current role to dream destination</div></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Dream Role</label><input class="form-input" id="gps-goal" placeholder="e.g. Senior Data Scientist at Google"/></div>
+          <div class="form-group"><label class="form-label">Current Position</label><input class="form-input" id="gps-current" placeholder="e.g. CS Student / Junior Dev"/></div>
+          <div class="form-group full"><label class="form-label">Your Skills & Experience</label><textarea class="form-textarea" id="gps-skills" placeholder="List skills, experience, education..."></textarea></div>
+        </div>
+        <button class="gen-btn" onclick="runAITool('gps')">🗺️ Chart My Path</button>
+        <div id="gps-result"></div>
+      </div>
+    </div>
+
+    <!-- ═══ MY PROFILE ═══ -->
+    <div class="dash-section" id="sec-profile">
+      <div class="tool-screen-wrap">
+        <div class="tool-header">
+          <div><div class="tool-title">👤 My Professional Profile</div><div class="tool-subtitle">Manage your identity, professional data, and app preferences</div></div>
+        </div>
+        
+        <div class="profile-main-grid">
+          <div class="profile-card-large">
+            <div class="profile-avatar-large" id="profile-avatar-display">G</div>
+            <div class="profile-details">
+              <h2 id="profile-name-display">Guest User</h2>
+              <p id="profile-email-display">guest@careerpilot.ai</p>
+              <div class="profile-badges">
+                <span class="plan-chip free" id="profilePlanChip">Free Plan</span>
+                <span class="profile-badge">Verified</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="profile-settings-grid">
+            <!-- Subscription Control -->
+            <div class="settings-box subscription-box" id="subscriptionBox">
+              <h3 class="settings-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Subscription</h3>
+              <div class="subscription-status" id="subscriptionStatus">
+                <div class="sub-plan-display">
+                  <span class="sub-plan-label" id="subPlanLabel">Free Plan</span>
+                  <span class="sub-plan-desc" id="subPlanDesc">Limited tools · Basic templates</span>
+                </div>
+                <button class="btn btn-primary btn-sm" id="subActionBtn" onclick="openUpgrade()">✨ Upgrade to Pro</button>
+              </div>
+              <div class="sub-features-mini" id="subFeaturesMini">
+                <div class="sub-feat"><span class="sub-feat-icon">📄</span> 5 Resume Templates</div>
+                <div class="sub-feat"><span class="sub-feat-icon">📥</span> 2 PDF Downloads</div>
+                <div class="sub-feat locked"><span class="sub-feat-icon">🤖</span> AI Coach <span class="plan-chip pro" style="font-size:.6rem;padding:.1rem .4rem;">PRO</span></div>
+                <div class="sub-feat locked"><span class="sub-feat-icon">🖼️</span> Image Export <span class="plan-chip pro" style="font-size:.6rem;padding:.1rem .4rem;">PRO</span></div>
+              </div>
+            </div>
+
+            <div class="settings-box">
+              <h3 class="settings-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Custom Logo</h3>
+              <p class="settings-desc">Upload your own logo for the platform branding</p>
+              <div style="margin-top:0.75rem;">
+                <input type="file" id="logoUploadInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)"/>
+                <button class="btn btn-ghost btn-sm w-full" onclick="document.getElementById('logoUploadInput').click()">📤 Upload New Logo</button>
+                <div id="logoPreviewStatus" style="font-size:0.7rem;color:var(--muted);margin-top:0.5rem;text-align:center;">Default logo in use</div>
+              </div>
+            </div>
+
+            <div class="settings-box">
+              <h3 class="settings-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>App Preferences</h3>
+              <div class="pref-row">
+                <span>Dark Mode</span>
+                <button class="drag-toggle" id="themeToggle" onclick="toggleTheme()"></button>
+              </div>
+              <div class="pref-row">
+                <span>High Performance Mode</span>
+                <span class="plan-chip pro">PRO</span>
+              </div>
+              <div class="pref-row" id="signOutRow" style="display:none;">
+                <span>Account</span>
+                <button class="btn btn-ghost btn-xs" onclick="handleSignOut()">Sign Out</button>
+              </div>
+            </div>
+
+            <!-- ═══ PROJECT BUILDER (In Profile) ═══ -->
+            <div class="settings-box full-width-settings" style="grid-column: 1 / -1;">
+              <h3 class="settings-title">🛠️ Project Builder Assistant</h3>
+              <p class="settings-desc">Get project ideas and descriptions for your resume</p>
+              <div class="form-grid" style="margin-top: 1rem;">
+                <div class="form-group"><label class="form-label">Your Skills</label><input class="form-input" id="pb-skills" placeholder="React, Python, Firebase"/></div>
+                <div class="form-group"><label class="form-label">Domain</label>
+                  <select class="form-select" id="pb-domain"><option>Web Development</option><option>Data Science</option><option>Mobile App</option><option>AI/ML</option><option>DevOps</option></select>
+                </div>
+              </div>
+              <button class="gen-btn" onclick="runAITool('projects')">🛠️ Suggest Projects</button>
+              <div id="projects-result"></div>
+            </div>
+
+            <!-- ═══ DOCUMENT HUB (In Profile) ═══ -->
+            <div class="settings-box full-width-settings" style="grid-column: 1 / -1;">
+              <h3 class="settings-title">📁 Document Hub</h3>
+              <p class="settings-desc">Store resumes, certificates, cover letters.</p>
+              <div style="text-align:center;padding:2rem 1rem;color:var(--muted);" id="docEmptyState">
+                <div style="font-size:2rem;margin-bottom:.5rem;">📁</div>
+                <p style="font-size:.85rem;font-weight:600;">Your documents will appear here</p>
+              </div>
+              <div id="docList" class="doc-list-grid"></div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('authModal')">✕</button>
+    <div class="modal-title">Welcome to CareerPilot ✈</div>
+    <div class="modal-sub">Choose how to continue. Google keeps your data on this device until you clear it. Guest mode deletes data after 24 hours.</div>
+    <button type="button" class="auth-btn auth-google" onclick="loginUserGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="auth-divider">— or —</div>
+    <button type="button" class="auth-btn auth-guest" onclick="beginGuestLogin()">👤 Continue as Guest</button>
+    <div class="auth-notice">⚠️ <span>Guest: browser-only storage, auto-deleted after 24 hours. Use Google for permanent storage on this device.</span></div>
+  </div>
+</div>
+
+<!-- Guest mode warning -->
+<div class="modal-overlay" id="guestWarnModal">
+  <div class="modal guest-warn-modal">
+    <button type="button" class="modal-close" onclick="closeModal('guestWarnModal');openAuth();">✕</button>
+    <div class="modal-title">Guest mode</div>
+    <div class="modal-sub guest-warn-body">
+      <p>You're about to use CareerPilot without Google sign-in.</p>
+      <ul class="guest-warn-list">
+        <li>Your data is saved only in this browser.</li>
+        <li>It is <strong>automatically deleted after 24 hours</strong>.</li>
+        <li>Clearing site data or another device won't have your work.</li>
+        <li>Sign in with Google anytime to keep your data long-term on this device.</li>
+      </ul>
+    </div>
+    <div class="guest-warn-actions">
+      <button type="button" class="btn btn-primary" style="width:100%" onclick="confirmGuestSession()">I understand — continue as guest</button>
+      <button type="button" class="auth-btn auth-google" style="margin-top:.75rem;width:100%" onclick="switchGuestToGoogle()">Continue with Google instead</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upgrade Modal -->
+<div class="modal-overlay" id="upgradeModal">
+  <div class="modal upgrade-modal-shell">
+    <button type="button" class="modal-close" onclick="closeUpgradeModal()" aria-label="Close">✕</button>
+    <div id="upgradeModalBody"></div>
+  </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reviewModal')">✕</button>
+    <div class="modal-title">Share Your Experience 🌟</div>
+    <div class="modal-sub">How has CareerPilot helped your journey?</div>
+    <div class="form-group"><label class="form-label">Rating</label>
+      <select class="form-select" id="rev-stars"><option value="5">⭐⭐⭐⭐⭐ (Excellent)</option><option value="4">⭐⭐⭐⭐ (Great)</option><option value="3">⭐⭐⭐ (Good)</option></select>
+    </div>
+    <div class="form-group" style="margin-top:1rem;"><label class="form-label">Review</label><textarea class="form-textarea" id="rev-text" placeholder="Your feedback..."></textarea></div>
+    <button class="gen-btn" onclick="submitReview()">Submit Review</button>
+  </div>
+</div>
+
+
+
+<!-- Toast -->
+<div class="toast" id="toast" style="display:none;">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span id="toastMsg">Done!</span>
+</div>
+
+
+
+
+
+<script src="firebase-config.js"></script>
+<script src="stripe-config.js"></script>
+<script src="app.js"></script>
+<script src="ai-tools.js"></script>
+
+<script>
+// ═══ INITIALIZATION ═══
+window.addEventListener('load', () => {
+  // One-time Welcome Voiceover
+  if (!localStorage.getItem('cp_welcome_played')) {
+    setTimeout(() => {
+      try {
+        const speech = new SpeechSynthesisUtterance('Welcome to Career Pilot X');
+        speech.rate = 0.95;
+        speech.pitch = 1.1;
+        speech.volume = 0.8;
+        window.speechSynthesis.speak(speech);
+        localStorage.setItem('cp_welcome_played', 'true');
+      } catch (e) {
+        console.warn('[Speech] Voiceover failed:', e);
+      }
+    }, 1200);
+  }
+});
+</script>
+</body>
+</html>
